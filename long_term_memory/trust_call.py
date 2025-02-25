@@ -13,7 +13,7 @@ load_dotenv()
 
 # conversation
 conversation = [HumanMessage(content="Hi, I am Aniket..."),
-                AIMessage(content="Hello Aniket, I am a language model."),
+                AIMessage(content="Nice to meet you, Aniket."),
                 HumanMessage(content="I really like biking around Pune."),]
 
 # Schema
@@ -38,5 +38,5 @@ system_msg = "Extract the user profile from the following conversation"
 # Invoke the extractor
 result = trustcall_extractor.invoke({"messages": [SystemMessage(content=system_msg)] + conversation})
 
-for m in result["messages"]:
-    m.pretty_print()
+
+print(result["responses"])
