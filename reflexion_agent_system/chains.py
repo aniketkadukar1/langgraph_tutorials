@@ -3,10 +3,13 @@ import datetime
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 from schema import AnswerQuestion, ReviseAnswer
-from langchain_core.output_parsers.openai_tools import PydanticToolsParser
+from langchain_core.output_parsers.openai_tools import PydanticToolsParser, JsonOutputToolsParser
 from langchain_core.messages import HumanMessage
 
 pydantic_parser = PydanticToolsParser(tools=[AnswerQuestion])
+
+parser = JsonOutputToolsParser(return_id=True)
+
 
 load_dotenv()
 
@@ -35,7 +38,7 @@ first_responder_prompt_template = actor_prompt_template.partial(
     first_instruction="Provide a detailed ~250 word answer"
 )
 
-first_responder_chain = first_responder_prompt_template | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer") | pydantic_parser
+first_responder_chain = first_responder_prompt_template | llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion") | pydantic_parser
 
 # Revisor chain instruction prompt
 revise_instruction = """Revise your previous answer using the new information.
@@ -50,7 +53,7 @@ revise_instruction = """Revise your previous answer using the new information.
 # Revisor chain
 revisor_chain = actor_prompt_template.partial(
     first_instruction= revise_instruction
-) | llm.bind_tools(tools=[AnswerQuestion], tool_choice="ReviseAnswer") | pydantic_parser
+) | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer") | pydantic_parser
 
 response = first_responder_chain.invoke({"messages": [HumanMessage(content="Write me a blog post on how small businesses can leverage AI to grow")]})
 
