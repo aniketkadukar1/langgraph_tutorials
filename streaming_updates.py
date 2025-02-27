@@ -74,9 +74,9 @@ graph = builder.compile(checkpointer=memory)
 print(graph.get_graph().draw_ascii())
 
 # Create a thread
-# config = {"configurable": {"thread_id": "1"}}
+config = {"configurable": {"thread_id": "1"}}
 
-# result = graph.stream({"messages": [HumanMessage(content="hi! I'm Aniket")]}, config, stream_mode="updates")
+result = graph.stream({"messages": [HumanMessage(content="hi! I'm Aniket")]}, config, stream_mode="updates")
 
 # Start conversation
 # for chunk in graph.stream({"messages": [HumanMessage(content="hi! I'm Aniket")]}, config, stream_mode="updates"):

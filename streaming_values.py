@@ -74,7 +74,6 @@ graph = builder.compile(checkpointer=memory)
 print(graph.get_graph().draw_ascii())
 
 
-# Start conversation, again
 config = {"configurable": {"thread_id": "2"}}
 
 # Start conversation

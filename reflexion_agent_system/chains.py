@@ -13,7 +13,7 @@ parser = JsonOutputToolsParser(return_id=True)
 
 load_dotenv()
 
-llm = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
+llm = ChatGroq(temperature=0, model_name="qwen-2.5-32b")
 
 
 # Actor Agent Prompt
@@ -38,7 +38,9 @@ first_responder_prompt_template = actor_prompt_template.partial(
     first_instruction="Provide a detailed ~250 word answer"
 )
 
-first_responder_chain = first_responder_prompt_template | llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion") | pydantic_parser
+first_responder_chain = first_responder_prompt_template | llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion")
+
+validator = PydanticToolsParser(tools=[AnswerQuestion])
 
 # Revisor chain instruction prompt
 revise_instruction = """Revise your previous answer using the new information.
@@ -53,8 +55,8 @@ revise_instruction = """Revise your previous answer using the new information.
 # Revisor chain
 revisor_chain = actor_prompt_template.partial(
     first_instruction= revise_instruction
-) | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer") | pydantic_parser
+) | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer") 
 
-response = first_responder_chain.invoke({"messages": [HumanMessage(content="Write me a blog post on how small businesses can leverage AI to grow")]})
+# response = first_responder_chain.invoke({"messages": [HumanMessage(content="Write me a blog post on how small businesses can leverage AI to grow")]})
 
-print(response)
+# print(response)
